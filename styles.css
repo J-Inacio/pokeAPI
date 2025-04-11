@@ -1,0 +1,32 @@
+*{
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: "Pixelify Sans", sans-serif;
+    letter-spacing: 4px;
+}
+
+#pokemons {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+    background-color: #f4f4f4;
+    padding: 1rem;
+}
+
+.card {
+    color: #f4f4f4;
+    display: flex;
+    flex-direction: column;
+    width: 15rem;
+    text-align: center;
+    border-radius: .5rem;
+    background-color: #6e8df3;
+    padding: 1rem;
+}
+
+.card img {
+    object-fit: cover;
+    object-position: center;
+}
