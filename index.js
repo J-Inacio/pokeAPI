@@ -1,6 +1,6 @@
 const pokemonsDiv = document.getElementById("pokemons");
-
-
+import { getPokeColor, colors } from "./poke-colors.js";
+console.log(getPokeColor('fire'))
 const getPokemons = async () => {
 	const detailsPromises = [];
 	for (let i = 1; i < 101; i++) {
@@ -19,10 +19,10 @@ const getTypes = (pokemon) => {
     const type2 = pokemon.types[1]?.type.name ?? "sem tipo"
 
     if(pokemon.types.length > 1) {
-       return  `${type1} | ${type2}`
+       return  `<span style="background-color: ${getPokeColor(type1)};" > ${type1} </span>  <span style="background-color: ${getPokeColor(type2)};"> ${type2} </span>`
     } 
 
-    return type1
+    return `<span style="background-color: ${getPokeColor(type1)};">${type1}</span>`
 }
 
 async function RenderPokemon(pokemon) {
@@ -36,7 +36,7 @@ async function RenderPokemon(pokemon) {
     img.src = pokemon.sprites.front_default
 
     const types = document.createElement('p')
-    types.textContent = getTypes(pokemon)
+    types.innerHTML = getTypes(pokemon)
     card.append(name, img, types)
     pokemonsDiv.appendChild(card)
 }
