@@ -13,6 +13,7 @@
     gap: 1rem;
     background-color: #f4f4f4;
     padding: 1rem;
+    background-image: url("https://img.freepik.com/free-vector/green-grass-background-realistic-style_23-2148221453.jpg");
 }
 
 .card {
@@ -22,7 +23,10 @@
     width: 15rem;
     text-align: center;
     border-radius: .5rem;
-    background-color: #6e8df3;
+    background: transparent;
+    backdrop-filter: blur(10px);
+    box-shadow: 0px 10px 10px 0px rgba(0, 0, 0, 0.25);
+	background-color: rgba(112, 198, 255, 0.3);
     padding: 1rem;
 }
 
