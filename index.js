@@ -41,6 +41,7 @@ const getAbilities = (pokemon) => {
 const showDetails = (pokemon) => {
 	const detailsCard = document.createElement("div");
 	detailsCard.className = "detailsCard";
+	detailsCard.id = `detail-${pokemon.id}`
 	detailsCard.style.backgroundColor = getPokeColor(pokemon.types[0].type.name);
 	const pokemonTitle = document.createElement("h2");
 	pokemonTitle.innerText = pokemon.name;
@@ -188,6 +189,10 @@ async function RenderPokemon(pokemon) {
 	detailBtn.innerText = "Show details";
 
 	detailBtn.addEventListener("click", () => {
+		const existingCard = document.getElementById(`detail-${pokemon.id}`)
+		if(existingCard) {
+			return
+		}
 		const details = showDetails(pokemon);
 		pokemonsDiv.appendChild(details);
 
