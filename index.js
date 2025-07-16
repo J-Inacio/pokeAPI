@@ -1,44 +1,209 @@
 const pokemonsDiv = document.getElementById("pokemons");
-import { getPokeColor, colors } from "./poke-colors.js";
-console.log(getPokeColor('fire'))
+import { getPokeColor } from "./poke-colors.js";
+
 const getPokemons = async () => {
 	const detailsPromises = [];
-	for (let i = 1; i < 101; i++) {
+	for (let i = 1; i < 11; i++) {
 		detailsPromises.push(
 			fetch(`https://pokeapi.co/api/v2/pokemon/${i}`).then((res) => res.json())
 		);
 	}
-	
-    const pokemonsDetails = await Promise.all(detailsPromises)
-    console.log(pokemonsDetails);
-    pokemonsDetails.forEach(RenderPokemon)
+
+	const pokemonsDetails = await Promise.all(detailsPromises);
+	console.log(pokemonsDetails);
+	pokemonsDetails.forEach(RenderPokemon);
 };
 
 const getTypes = (pokemon) => {
-    const type1 = pokemon.types[0].type.name
-    const type2 = pokemon.types[1]?.type.name ?? "sem tipo"
+	const type1 = pokemon.types[0].type.name;
+	const type2 = pokemon.types[1]?.type.name ?? "sem tipo";
 
-    if(pokemon.types.length > 1) {
-       return  `<span style="background-color: ${getPokeColor(type1)};" > ${type1} </span>  <span style="background-color: ${getPokeColor(type2)};"> ${type2} </span>`
-    } 
+	if (pokemon.types.length > 1) {
+		return `<span style="background-color: ${getPokeColor(
+			type1
+		)};" > ${type1} </span>  <span style="background-color: ${getPokeColor(
+			type2
+		)};"> ${type2} </span>`;
+	}
 
-    return `<span style="background-color: ${getPokeColor(type1)};">${type1}</span>`
-}
+	return `<span style="background-color: ${getPokeColor(
+		type1
+	)};">${type1}</span>`;
+};
+
+const getAbilities = (pokemon) => {
+	const abilities = pokemon.abilities
+		.map((ability) => ability.ability.name)
+		.join(", ");
+	return abilities;
+};
+
+const showDetails = (pokemon) => {
+	const detailsCard = document.createElement("div");
+	detailsCard.className = "detailsCard";
+	detailsCard.style.backgroundColor = getPokeColor(pokemon.types[0].type.name);
+	const pokemonTitle = document.createElement("h2");
+	pokemonTitle.innerText = pokemon.name;
+
+	const detailTypes = document.createElement("p");
+	detailTypes.innerHTML = getTypes(pokemon);
+	detailTypes.className = "types";
+
+	const pokeID = document.createElement("p");
+	pokeID.innerText = "#" + pokemon.id;
+
+	const pokeImg = document.createElement("img");
+	pokeImg.src = pokemon.sprites.front_default;
+
+	const borderDetails = document.createElement("div");
+	borderDetails.className = "borderDetails";
+
+	const detailSection = document.createElement("section");
+	detailSection.className = "detailSection";
+
+	const pokeUl = document.createElement("ul");
+
+	const pokemonSpecies = document.createElement("li");
+	pokemonSpecies.className = "pokemonAtribute";
+	pokemonSpecies.innerText = "Species";
+
+	const pokemonSpeciesValue = document.createElement("li");
+	pokemonSpeciesValue.className = "atributeValue";
+	pokemonSpeciesValue.innerText = pokemon.species.name;
+
+	const pokeHeight = document.createElement("li");
+	pokeHeight.className = "pokemonAtribute";
+	pokeHeight.innerText = "Height";
+
+	const pokeHeightValue = document.createElement("li");
+	pokeHeightValue.innerText = pokemon.height;
+
+	const pokeWeight = document.createElement("li");
+	pokeWeight.className = "pokemonAtribute";
+	pokeWeight.innerText = "Weight";
+
+	const pokeWeightValue = document.createElement("li");
+	pokeWeightValue.innerText = pokemon.weight;
+
+	const pokeAbilities = document.createElement("li");
+	pokeAbilities.className = "pokemonAtribute";
+	pokeAbilities.innerText = "Abilities";
+
+	const pokeAbilitiesValue = document.createElement("li");
+	pokeAbilitiesValue.innerText = getAbilities(pokemon);
+
+	const baseStatsTitle = document.createElement("p");
+	baseStatsTitle.innerText = "Base stats";
+
+	const statusContainer = document.createElement("div");
+	statusContainer.className = "statusContainer";
+
+	const totalStats = pokemon.stats.reduce((previousValue, currentValue) => {
+		return previousValue + currentValue.base_stat;
+	}, 0);
+
+	const totalHtmlLi = document.createElement("li");
+	totalHtmlLi.className = "statusItem";
+
+	const labelTotalStats = document.createElement("span");
+	labelTotalStats.innerText = "Total";
+
+	const totalStatNum = document.createElement("span");
+	totalStatNum.innerText = totalStats;
+	totalStatNum.className = "statNumber";
+
+	const totalBarContainer = document.createElement("div");
+	totalBarContainer.className = "statBar";
+
+	const TotalinternBar = document.createElement("div");
+	TotalinternBar.className = "internStatBar";
+	TotalinternBar.style.width = `${totalStats / 6}%`;
+	totalBarContainer.appendChild(TotalinternBar);
+	totalHtmlLi.append(labelTotalStats, totalStatNum, totalBarContainer);
+
+	pokemon.stats.forEach((stat) => {
+		const li = document.createElement("li");
+		li.className = "statusItem";
+
+		const label = document.createElement("span");
+		label.innerText = stat.stat.name;
+
+		const statNum = document.createElement("span");
+		statNum.innerText = stat.base_stat;
+		statNum.className = "statNumber";
+
+		const barContainer = document.createElement("div");
+		barContainer.className = "statBar";
+
+		const internBar = document.createElement("div");
+		internBar.className = "internStatBar";
+		internBar.style.width = `${stat.base_stat}%`;
+
+		barContainer.appendChild(internBar);
+		li.append(label, statNum, barContainer);
+		statusContainer.appendChild(li);
+	});
+
+	statusContainer.appendChild(totalHtmlLi);
+
+	pokeUl.append(
+		pokemonSpecies,
+		pokemonSpeciesValue,
+		pokeHeight,
+		pokeHeightValue,
+		pokeWeight,
+		pokeWeightValue,
+		pokeAbilities,
+		pokeAbilitiesValue,
+		baseStatsTitle,
+		statusContainer
+	);
+
+	detailSection.appendChild(pokeUl);
+
+	borderDetails.appendChild(detailSection);
+
+	detailsCard.append(pokemonTitle, detailTypes, pokeID, pokeImg, borderDetails);
+
+	return detailsCard;
+};
 
 async function RenderPokemon(pokemon) {
-    const card = document.createElement('div')
-    card.className = "card"
+	const card = document.createElement("div");
+	card.className = "card";
+	card.id = pokemon.id;
 
-    const name = document.createElement('h2')
-    name.textContent = pokemon.name
+	const name = document.createElement("h2");
+	name.textContent = pokemon.name;
 
-    const img = document.createElement('img')
-    img.src = pokemon.sprites.front_default
+	const img = document.createElement("img");
+	img.src = pokemon.sprites.front_default;
 
-    const types = document.createElement('p')
-    types.innerHTML = getTypes(pokemon)
-    card.append(name, img, types)
-    pokemonsDiv.appendChild(card)
+	const types = document.createElement("p");
+	types.className = "types";
+	types.innerHTML = getTypes(pokemon);
+
+	const detailBtn = document.createElement("button");
+	detailBtn.type = "button";
+	detailBtn.innerText = "Show details";
+
+	detailBtn.addEventListener("click", () => {
+		const details = showDetails(pokemon);
+		pokemonsDiv.appendChild(details);
+
+		setTimeout(() => {
+			// delay para evitar que o próprio clique no botão feche o card
+			document.addEventListener("click", function handleClickFora(e) {
+				if (!details.contains(e.target) && e.target !== detailBtn) {
+					details.remove();
+					document.removeEventListener("click", handleClickFora);
+				}
+			});
+		}, 0);
+	});
+
+	card.append(name, img, types, detailBtn);
+	pokemonsDiv.appendChild(card);
 }
 
 getPokemons();
