@@ -192,10 +192,13 @@ async function RenderPokemon(pokemon) {
 		pokemonsDiv.appendChild(details);
 
 		setTimeout(() => {
-			// delay para evitar que o próprio clique no botão feche o card
 			document.addEventListener("click", function handleClickFora(e) {
 				if (!details.contains(e.target) && e.target !== detailBtn) {
-					details.remove();
+					details.style.animation = "displayOffDetails 0.3s ease-in forwards"
+					setTimeout(() => {
+						details.remove();
+					}, 300)
+					
 					document.removeEventListener("click", handleClickFora);
 				}
 			});
