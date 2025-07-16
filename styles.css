@@ -83,7 +83,7 @@ main {
 }
 
 .detailsCard {
-	position: absolute;
+	position: fixed;
 	z-index: 10;
 	background-color: #b8b8b8;
 	border-radius: 0.5rem;

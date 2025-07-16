@@ -3,7 +3,7 @@ import { getPokeColor } from "./poke-colors.js";
 
 const getPokemons = async () => {
 	const detailsPromises = [];
-	for (let i = 1; i < 11; i++) {
+	for (let i = 1; i <= 10; i++) {
 		detailsPromises.push(
 			fetch(`https://pokeapi.co/api/v2/pokemon/${i}`).then((res) => res.json())
 		);
@@ -12,13 +12,32 @@ const getPokemons = async () => {
 	const pokemonsDetails = await Promise.all(detailsPromises);
 	console.log(pokemonsDetails);
 	pokemonsDetails.forEach(RenderPokemon);
+
 	const showMoreBtn = document.createElement("button");
 	showMoreBtn.type = "button";
 	showMoreBtn.className = "btn";
 	showMoreBtn.id = "showMoreBtn";
 	showMoreBtn.innerText = "Show More";
 
-	pokemonsDiv.appendChild(showMoreBtn);
+	let newLimit = pokemonsDetails.length + 1;
+	showMoreBtn.addEventListener("click", async () => {
+		const newArr = [];
+		for (let index = newLimit; index <= newLimit + 10; index++) {
+			newArr.push(
+				fetch(`https://pokeapi.co/api/v2/pokemon/${index}`).then((res) =>
+					res.json()
+				)
+			);
+		}
+
+		const newPokemons = await Promise.all(newArr);
+		newPokemons.forEach(RenderPokemon);
+		pokemonsDetails.push(...newPokemons);
+		newLimit = pokemonsDetails.length;
+		console.log(pokemonsDetails);
+	});
+
+	document.body.appendChild(showMoreBtn);
 };
 
 const getTypes = (pokemon) => {
@@ -83,16 +102,16 @@ const showDetails = (pokemon) => {
 	pokeHeight.innerText = "Height";
 
 	const pokeHeightValue = document.createElement("li");
-	pokeHeightValue.innerText = (pokemon.height/10) + " m";
-	pokeHeightValue.className = 'atributeValue'
+	pokeHeightValue.innerText = pokemon.height / 10 + " m";
+	pokeHeightValue.className = "atributeValue";
 
 	const pokeWeight = document.createElement("li");
 	pokeWeight.className = "pokemonAtribute";
 	pokeWeight.innerText = "Weight";
 
 	const pokeWeightValue = document.createElement("li");
-	pokeWeightValue.innerText = (pokemon.weight/10) + " kg";
-	pokeWeightValue.className = 'atributeValue'
+	pokeWeightValue.innerText = pokemon.weight / 10 + " kg";
+	pokeWeightValue.className = "atributeValue";
 
 	const pokeAbilities = document.createElement("li");
 	pokeAbilities.className = "pokemonAtribute";
@@ -116,7 +135,7 @@ const showDetails = (pokemon) => {
 
 	const labelTotalStats = document.createElement("span");
 	labelTotalStats.innerText = "Total";
-	labelTotalStats.className = "pokemonAtribute"
+	labelTotalStats.className = "pokemonAtribute";
 
 	const totalStatNum = document.createElement("span");
 	totalStatNum.innerText = totalStats;
@@ -128,11 +147,11 @@ const showDetails = (pokemon) => {
 	const TotalinternBar = document.createElement("div");
 	TotalinternBar.className = "internStatBar";
 	TotalinternBar.style.width = `${totalStats / 6}%`;
-	if(totalStats / 6  <= 33 ) {
-			TotalinternBar.style.backgroundColor = '#F95587';
-		} else if (totalStats / 6 <= 66) {
-			TotalinternBar.style.backgroundColor = '#F7D02C';
-		}
+	if (totalStats / 6 <= 33) {
+		TotalinternBar.style.backgroundColor = "#F95587";
+	} else if (totalStats / 6 <= 66) {
+		TotalinternBar.style.backgroundColor = "#F7D02C";
+	}
 	totalBarContainer.appendChild(TotalinternBar);
 	totalHtmlLi.append(labelTotalStats, totalStatNum, totalBarContainer);
 
@@ -142,7 +161,7 @@ const showDetails = (pokemon) => {
 
 		const label = document.createElement("span");
 		label.innerText = stat.stat.name;
-		label.className = "pokemonAtribute"
+		label.className = "pokemonAtribute";
 
 		const statNum = document.createElement("span");
 		statNum.innerText = stat.base_stat;
@@ -154,10 +173,10 @@ const showDetails = (pokemon) => {
 		const internBar = document.createElement("div");
 		internBar.className = "internStatBar";
 		internBar.style.width = `${stat.base_stat}%`;
-		if(stat.base_stat  <= 33 ) {
-			internBar.style.backgroundColor = '#F95587';
+		if (stat.base_stat <= 33) {
+			internBar.style.backgroundColor = "#F95587";
 		} else if (stat.base_stat <= 66) {
-			internBar.style.backgroundColor = '#F7D02C';
+			internBar.style.backgroundColor = "#F7D02C";
 		}
 
 		barContainer.appendChild(internBar);
