@@ -12,6 +12,13 @@ const getPokemons = async () => {
 	const pokemonsDetails = await Promise.all(detailsPromises);
 	console.log(pokemonsDetails);
 	pokemonsDetails.forEach(RenderPokemon);
+	const showMoreBtn = document.createElement("button");
+	showMoreBtn.type = "button";
+	showMoreBtn.className = "btn";
+	showMoreBtn.id = "showMoreBtn";
+	showMoreBtn.innerText = "Show More";
+
+	pokemonsDiv.appendChild(showMoreBtn);
 };
 
 const getTypes = (pokemon) => {
@@ -41,7 +48,7 @@ const getAbilities = (pokemon) => {
 const showDetails = (pokemon) => {
 	const detailsCard = document.createElement("div");
 	detailsCard.className = "detailsCard";
-	detailsCard.id = `detail-${pokemon.id}`
+	detailsCard.id = `detail-${pokemon.id}`;
 	detailsCard.style.backgroundColor = getPokeColor(pokemon.types[0].type.name);
 	const pokemonTitle = document.createElement("h2");
 	pokemonTitle.innerText = pokemon.name;
@@ -69,7 +76,6 @@ const showDetails = (pokemon) => {
 	pokemonSpecies.innerText = "Species";
 
 	const pokemonSpeciesValue = document.createElement("li");
-	pokemonSpeciesValue.className = "atributeValue";
 	pokemonSpeciesValue.innerText = pokemon.species.name;
 
 	const pokeHeight = document.createElement("li");
@@ -77,14 +83,16 @@ const showDetails = (pokemon) => {
 	pokeHeight.innerText = "Height";
 
 	const pokeHeightValue = document.createElement("li");
-	pokeHeightValue.innerText = pokemon.height;
+	pokeHeightValue.innerText = (pokemon.height/10) + " m";
+	pokeHeightValue.className = 'atributeValue'
 
 	const pokeWeight = document.createElement("li");
 	pokeWeight.className = "pokemonAtribute";
 	pokeWeight.innerText = "Weight";
 
 	const pokeWeightValue = document.createElement("li");
-	pokeWeightValue.innerText = pokemon.weight;
+	pokeWeightValue.innerText = (pokemon.weight/10) + " kg";
+	pokeWeightValue.className = 'atributeValue'
 
 	const pokeAbilities = document.createElement("li");
 	pokeAbilities.className = "pokemonAtribute";
@@ -108,6 +116,7 @@ const showDetails = (pokemon) => {
 
 	const labelTotalStats = document.createElement("span");
 	labelTotalStats.innerText = "Total";
+	labelTotalStats.className = "pokemonAtribute"
 
 	const totalStatNum = document.createElement("span");
 	totalStatNum.innerText = totalStats;
@@ -119,6 +128,11 @@ const showDetails = (pokemon) => {
 	const TotalinternBar = document.createElement("div");
 	TotalinternBar.className = "internStatBar";
 	TotalinternBar.style.width = `${totalStats / 6}%`;
+	if(totalStats / 6  <= 33 ) {
+			TotalinternBar.style.backgroundColor = '#F95587';
+		} else if (totalStats / 6 <= 66) {
+			TotalinternBar.style.backgroundColor = '#F7D02C';
+		}
 	totalBarContainer.appendChild(TotalinternBar);
 	totalHtmlLi.append(labelTotalStats, totalStatNum, totalBarContainer);
 
@@ -128,6 +142,7 @@ const showDetails = (pokemon) => {
 
 		const label = document.createElement("span");
 		label.innerText = stat.stat.name;
+		label.className = "pokemonAtribute"
 
 		const statNum = document.createElement("span");
 		statNum.innerText = stat.base_stat;
@@ -139,6 +154,11 @@ const showDetails = (pokemon) => {
 		const internBar = document.createElement("div");
 		internBar.className = "internStatBar";
 		internBar.style.width = `${stat.base_stat}%`;
+		if(stat.base_stat  <= 33 ) {
+			internBar.style.backgroundColor = '#F95587';
+		} else if (stat.base_stat <= 66) {
+			internBar.style.backgroundColor = '#F7D02C';
+		}
 
 		barContainer.appendChild(internBar);
 		li.append(label, statNum, barContainer);
@@ -185,13 +205,14 @@ async function RenderPokemon(pokemon) {
 	types.innerHTML = getTypes(pokemon);
 
 	const detailBtn = document.createElement("button");
+	detailBtn.className = "btn";
 	detailBtn.type = "button";
 	detailBtn.innerText = "Show details";
 
 	detailBtn.addEventListener("click", () => {
-		const existingCard = document.getElementById(`detail-${pokemon.id}`)
-		if(existingCard) {
-			return
+		const existingCard = document.getElementById(`detail-${pokemon.id}`);
+		if (existingCard) {
+			return;
 		}
 		const details = showDetails(pokemon);
 		pokemonsDiv.appendChild(details);
@@ -199,11 +220,11 @@ async function RenderPokemon(pokemon) {
 		setTimeout(() => {
 			document.addEventListener("click", function handleClickFora(e) {
 				if (!details.contains(e.target) && e.target !== detailBtn) {
-					details.style.animation = "displayOffDetails 0.3s ease-in forwards"
+					details.style.animation = "displayOffDetails 0.3s ease-in forwards";
 					setTimeout(() => {
 						details.remove();
-					}, 300)
-					
+					}, 300);
+
 					document.removeEventListener("click", handleClickFora);
 				}
 			});
